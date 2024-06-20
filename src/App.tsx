@@ -13,7 +13,11 @@ function parse(input: string) {
     let parsed = JSON.parse(input);
     output.parsed = JSON.stringify(parsed, null, 2);
 
-    const itemData = parsed?.data?.assessmentItem?.item?.itemData;
+    const itemData =
+      parsed?.data?.assessmentItem?.item?.itemData ||
+      parsed?.assessmentItem?.item?.itemData ||
+      parsed?.item?.itemData ||
+      parsed?.itemData;
     if (itemData) {
       parsed = JSON.parse(itemData);
       output.itemData = JSON.stringify(parsed, null, 2);

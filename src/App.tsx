@@ -40,8 +40,22 @@ function App() {
     setItemData(out.itemData);
   }, [input]);
 
-  function copy(what: "parsed" | "itemData") {
-    navigator.clipboard.writeText(what === "parsed" ? parsed : itemData);
+  function copy(what: "parsed" | "itemData" | "question") {
+    let text = "";
+    if (what === "parsed") {
+      text = parsed;
+    } else if (what === "itemData") {
+      text = itemData;
+    } else if (what === "question") {
+      const parsedItemData = JSON.parse(itemData);
+      if (!parsedItemData?.question) {
+        return;
+      }
+      text = JSON.stringify(parsedItemData.question, null, 2);
+    } else {
+      return;
+    }
+    navigator.clipboard.writeText(text);
   }
 
   return (
@@ -58,7 +72,9 @@ function App() {
           <textarea value={parsed} readOnly />
         </label>
         <div>
-          <button onClick={() => copy("parsed")}>Copy parsed</button>
+          <button onClick={() => copy("parsed")} disabled={!parsed}>
+            Copy parsed
+          </button>
         </div>
       </div>
       <div className="input-container">
@@ -67,7 +83,12 @@ function App() {
           <textarea value={itemData} readOnly />
         </label>
         <div>
-          <button onClick={() => copy("itemData")}>Copy item data</button>
+          <button onClick={() => copy("itemData")} disabled={!itemData}>
+            Copy item data
+          </button>
+          <button onClick={() => copy("question")} disabled={!itemData}>
+            Copy question
+          </button>
         </div>
       </div>
     </div>
